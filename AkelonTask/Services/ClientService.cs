@@ -2,13 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AkelonTask.Entities;
+using AkelonTask.Interfaces;
 using ClosedXML.Excel;
 
 namespace AkelonTask.Services
 {
-    public class ClientService
+    public class ClientService : IClientService
     {
-        public static bool ChangeContactPerson(Dictionary<int, ClientEntity> clientDictionary, string companyName, string newContactPerson, string filePath, string clientsSheetName)
+        private readonly ResultPrinterService _resultPrinter;
+        
+        public ClientService(ResultPrinterService resultPrinter)
+        {
+            _resultPrinter = resultPrinter;
+        }
+
+        public bool ChangeContactPerson(Dictionary<int, ClientEntity> clientDictionary, string companyName, string newContactPerson, string filePath, string clientsSheetName)
         {
             var client = clientDictionary.Values.FirstOrDefault(x =>
                 string.Equals(x.Name, companyName, StringComparison.OrdinalIgnoreCase));
@@ -24,7 +32,7 @@ namespace AkelonTask.Services
         }
 
         
-        public static void UpdateClientInfo(Dictionary<int, ClientEntity> clientDictionary, string filePath, string clientsSheetName)
+        public void UpdateClientInfo(Dictionary<int, ClientEntity> clientDictionary, string filePath, string clientsSheetName)
         {
             Console.WriteLine("Введите название организации клиента:");
             var companyName = Console.ReadLine();
@@ -33,11 +41,11 @@ namespace AkelonTask.Services
             var newContactPerson = Console.ReadLine();
 
             var success = ChangeContactPerson(clientDictionary, companyName, newContactPerson, filePath, clientsSheetName);
-            ResultPrintService.PrintContactPersonChangeResult(success, companyName, newContactPerson);
+            _resultPrinter.PrintContactPersonChangeResult(success, companyName, newContactPerson);
         }
 
         
-        public static void UpdateСlientsSheetName(string filePath, string clientsSheetName, Dictionary<int, ClientEntity> clientDictionary)
+        public void UpdateСlientsSheetName(string filePath, string clientsSheetName, Dictionary<int, ClientEntity> clientDictionary)
         {
             using (var workbook = new XLWorkbook(filePath))
             {

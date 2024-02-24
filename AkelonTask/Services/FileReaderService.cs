@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using AkelonTask.Entities;
+using AkelonTask.Interfaces;
 using ClosedXML.Excel;
 
 namespace AkelonTask.Services
 {
-    public class FileReaderService
+    public class FileReaderService : IFileReaderService
     {
-        public static (Dictionary<int, ProductEntity>, Dictionary<int, ClientEntity>, List<OrderEntity>) ReadLinkedTables(string filePath, 
+        public (Dictionary<int, ProductEntity>, Dictionary<int, ClientEntity>, List<OrderEntity>) ReadLinkedTables(string filePath, 
             string productsSheetName, string clientsSheetName, string ordersSheetName)
         {
             var productDictionary = new Dictionary<int, ProductEntity>();

@@ -3,24 +3,31 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using AkelonTask.Entities;
+using AkelonTask.Interfaces;
 
 namespace AkelonTask.Services
 {
-    public class OrderService
+    public class OrderService : IOrderService
     {
-        public static void FindTopCustomerByOrders(List<OrderEntity> orderList,
+        private readonly ResultPrinterService _resultPrinter;
+        
+        public OrderService(ResultPrinterService resultPrinter)
+        {
+            _resultPrinter = resultPrinter;
+        }
+        public void FindTopCustomerByOrders(List<OrderEntity> orderList,
             Dictionary<int, ClientEntity> clientDictionary)
         {
             Console.WriteLine("Введите год и месяц для определения золотого клиента (гггг мм):");
-            
+        
             var yearMonthInput = Console.ReadLine();
-            
+        
             if (DateTime.TryParseExact(yearMonthInput, "yyyy MM", CultureInfo.InvariantCulture, DateTimeStyles.None,
                     out var yearMonth))
             {
                 var topCustomers =
-                    OrderService.GetTopCustomerByOrders(orderList, yearMonth.Year, yearMonth.Month, clientDictionary);
-                ResultPrintService.PrintTopCustomerByOrders(topCustomers);
+                    GetTopCustomerByOrders(orderList, yearMonth.Year, yearMonth.Month, clientDictionary);
+                _resultPrinter.PrintTopCustomerByOrders(topCustomers);
             }
             else
             {
@@ -28,7 +35,7 @@ namespace AkelonTask.Services
             }
         }
         
-        public static List<ClientEntity> GetTopCustomerByOrders(List<OrderEntity> orders, int year, int month, Dictionary<int, ClientEntity> clientDictionary)
+        public List<ClientEntity> GetTopCustomerByOrders(List<OrderEntity> orders, int year, int month, Dictionary<int, ClientEntity> clientDictionary)
         {
             var filteredOrders = orders.Where(x => x.OrderDate.Year == year && x.OrderDate.Month == month).ToList();
             var customerOrdersCount = new Dictionary<int, int>();

@@ -2,12 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AkelonTask.Entities;
+using AkelonTask.Interfaces;
 
 namespace AkelonTask.Services
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
-        public static void SearchProductAndPrintOrders(Dictionary<int, ProductEntity> productDictionary,
+        private readonly ResultPrinterService _resultPrinter;
+
+        public ProductService(ResultPrinterService resultPrinter)
+        {
+            _resultPrinter = resultPrinter;
+        }
+
+        public void SearchProductAndPrintOrders(Dictionary<int, ProductEntity> productDictionary,
             Dictionary<int, ClientEntity> clientDictionary, IEnumerable<OrderEntity> orderList)
         {
             Console.WriteLine("Введите наименование товара для поиска:");
@@ -19,7 +27,7 @@ namespace AkelonTask.Services
             if (foundProduct != null)
             {
                 var ordersForProduct = orderList.Where(x => x.ProductId == foundProduct.Id).ToList();
-                ResultPrintService.PrintOrdersForProduct(foundProduct, ordersForProduct, clientDictionary);
+                _resultPrinter.PrintOrdersForProduct(foundProduct, ordersForProduct, clientDictionary);
             }
             else
             {
@@ -27,4 +35,6 @@ namespace AkelonTask.Services
             }
         }
     }
+
+
 }
