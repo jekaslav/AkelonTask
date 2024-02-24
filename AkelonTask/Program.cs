@@ -46,7 +46,7 @@ namespace AkelonTask
                         ProductService.SearchProductAndPrintOrders(productDictionary, clientDictionary, orderList);
                         break;
                     case "4":
-                        ClientService.UpdateClientInfo(clientDictionary);
+                        ClientService.UpdateClientInfo(clientDictionary, filePath, clientsSheetName);
                         break;
                     case "5":
                         OrderService.FindTopCustomerByOrders(orderList, clientDictionary);
